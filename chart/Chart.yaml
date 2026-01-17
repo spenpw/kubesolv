@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kubesolv
+description: Kubesolv Rubik's Cube Solver (operator and web interface)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

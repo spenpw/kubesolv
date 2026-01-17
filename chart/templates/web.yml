@@ -1,0 +1,119 @@
+{{ if .Values.web.enabled }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kubesolv-ui
+  name: kubesolv-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubesolv-ui
+  template:
+    metadata:
+      labels:
+        app: kubesolv-ui
+    spec:
+      containers:
+        - image: {{ .Values.imagePrefix }}kubesolv/ui:{{ .Chart.AppVersion }}
+          imagePullPolicy: Always
+          name: kubesolv-ui
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kubesolv-ui
+  name: kubesolv-ui
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: kubesolv-ui
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kubesolv-rest-api
+  name: kubesolv-rest-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubesolv-rest-api
+  template:
+    metadata:
+      labels:
+        app: kubesolv-rest-api
+    spec:
+      containers:
+        - image: {{ .Values.imagePrefix }}kubesolv/rest-api:{{ .Chart.AppVersion }}
+          imagePullPolicy: Always
+          name: kubesolv-rest-api
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kubesolv-rest-api
+  name: kubesolv-rest-api
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: kubesolv-rest-api
+
+{{ if .Values.web.ingress.enabled }}
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubesolv-ingress
+  annotations:
+    {{ if .Values.web.ingress.tls.enabled }}
+    {{ if .Values.web.ingress.tls.certManager.enabled }}
+    {{- $_ := required "web.ingress.tls.certManager.issuerName is a required value" .Values.web.ingress.tls.certManager.issuerName}}
+    cert-manager.io/{{ .Values.web.ingress.tls.certManager.issuerType }}: {{ .Values.web.ingress.tls.certManager.issuerName }}
+    {{ end }}
+    ingress.kubernetes.io/ssl-redirect: "true"
+    {{ end }}
+spec:
+  {{ if .Values.web.ingress.className }}
+  ingressClassName: {{ .Values.web.ingress.className }}
+  {{ end }}
+  rules:
+  - host: {{ .Values.web.ingress.hostname }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kubesolv-ui
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: kubesolv-rest-api
+            port:
+              number: 80
+  {{ if .Values.web.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.web.ingress.hostname }}
+    secretName: kubesolv-ingress-cert
+  {{ end }}
+{{ end }}
+{{ end }}
