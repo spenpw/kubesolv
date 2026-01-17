@@ -3,7 +3,7 @@ use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode},
 };
-use kubesolv_rs::cube::{moves::CubeMove, state::CubeState};
+use kubesolv_solvers::{cube::{moves::CubeMove, state::CubeState}};
 use ratatui::{
     backend::CrosstermBackend,
     style::{Color, Style},
@@ -11,7 +11,7 @@ use ratatui::{
     widgets::{Block, Paragraph},
     Frame, Terminal,
 };
-use std::io;
+use std::{io};
 
 struct App {
     cube: CubeState,

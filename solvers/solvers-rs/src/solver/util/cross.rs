@@ -1,4 +1,7 @@
-use crate::{cube::{moves::NON_ROTATION_MOVES, state::CubeState}, solver::util::enumerate::enumerate_states_with_criteria};
+use crate::{
+    cube::{moves::NON_ROTATION_MOVES, state::CubeState},
+    solver::util::enumerate::enumerate_states_with_criteria,
+};
 
 impl CubeState {
     pub fn cross_solved(&self) -> bool {
@@ -32,35 +35,24 @@ pub fn enumerate_cross_solutions(
     max_depth: usize,
 ) -> Vec<(CubeState, Vec<crate::cube::moves::CubeMove>)> {
     let legal_moves = NON_ROTATION_MOVES;
-    enumerate_states_with_criteria(
-        state.clone(),
-        max_depth,
-        cross_solved,
-        &legal_moves,
-    )
+    enumerate_states_with_criteria(state.clone(), max_depth, cross_solved, &legal_moves)
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::cube::{moves::CubeMove};
+    use crate::cube::scramble::generate_scramble_sequence;
 
     use super::*;
     #[test]
     fn test_enumerate_cross_solutions() {
-        let mut state = CubeState::new_solved();
-        let scramble_moves = vec![
-            CubeMove::R,
-            CubeMove::U,
-            CubeMove::RPrime,
-            CubeMove::LPrime,
-            CubeMove::UPrime,
-            CubeMove::D,
-            CubeMove::R,
-        ];
-        for mv in scramble_moves.clone() {
-            state.execute_move(mv);
+        for i in 0..6 {
+            let mut state = CubeState::new_solved();
+            let scramble_moves = generate_scramble_sequence(i);
+            for mv in scramble_moves.clone() {
+                state.execute_move(mv);
+            }
+            let solutions = enumerate_cross_solutions(&state, i);
+            assert!(!solutions.is_empty(), "No cross solutions found");
         }
-        let solutions = enumerate_cross_solutions(&state, 4);
-        assert!(!solutions.is_empty(), "No cross solutions found");
     }
 }

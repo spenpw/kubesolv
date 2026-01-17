@@ -21,11 +21,3 @@ criterion = "0.5"
 [[bin]]
 name = "kubesolv-tui"
 path = "src/bin/tui.rs"
-
-[[bench]]
-name = "moves_benchmark"
-harness = false
-
-[[bench]]
-name = "bfs_benchmark"
-harness = false

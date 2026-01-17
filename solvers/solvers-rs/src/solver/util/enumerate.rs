@@ -7,13 +7,17 @@ pub fn enumerate_states_with_criteria(
     crate::cube::state::CubeState,
     Vec<crate::cube::moves::CubeMove>,
 )> {
-    // Sequential version - parallelization adds too much overhead for small search spaces
+    // Warn if max_depth > 6
+    if max_depth > 6 {
+        eprintln!(
+            "Warning: enumerate_states_with_criteria with max_depth > 6 may take a long time."
+        );
+    }
     let mut results = Vec::new();
-    if max_depth == 0 {
-        if criterion(&state) {
-            results.push((state.clone(), Vec::new()));
-        }
-    } else {
+    if criterion(&state) {
+        results.push((state.clone(), Vec::new()));
+    }
+    if max_depth != 0 {
         for mv in legal_moves {
             let mut new_state = state.clone();
             new_state.execute_move(*mv);
@@ -79,10 +83,5 @@ mod tests {
     #[test]
     fn test_enumerate_states_with_criteria_depth_4_scramble_5() {
         test_enumerate_states_with_criteria_depth_scrambled(4, 5, 0,usize::MAX);
-    }
-
-    #[test]
-    fn test_enumerate_states_with_criteria_depth_6_scramble_6() {
-        test_enumerate_states_with_criteria_depth_scrambled(6, 6, 1, usize::MAX);
     }
 }

@@ -1,4 +1,6 @@
-use crate::cube::state::CubeState;
+use itertools::Itertools;
+
+use crate::{cube::{moves::NON_ROTATION_MOVES, state::CubeState}, solver::util::enumerate::enumerate_states_with_criteria};
 
 pub enum F2LPair {
     FrontRight,
@@ -116,10 +118,92 @@ fn back_left_f2l_pair_solved(state: &CubeState) -> bool {
     state.back_left_f2l_pair_solved()
 }
 
-pub fn explore_f2l_solutions(
+// Generate criterion function based on boolean mask of which pairs should be solved
+pub fn make_criterion(mask: [bool; 4]) -> fn(&CubeState) -> bool {
+    match mask {
+        [true, false, false, false] => {
+            |s: &CubeState| s.cross_solved() && s.front_right_f2l_pair_solved()
+        }
+        [false, true, false, false] => {
+            |s: &CubeState| s.cross_solved() && s.front_left_f2l_pair_solved()
+        }
+        [false, false, true, false] => {
+            |s: &CubeState| s.cross_solved() && s.back_right_f2l_pair_solved()
+        }
+        [false, false, false, true] => {
+            |s: &CubeState| s.cross_solved() && s.back_left_f2l_pair_solved()
+        }
+        [true, true, false, false] => |s: &CubeState| {
+            s.cross_solved() && s.front_right_f2l_pair_solved() && s.front_left_f2l_pair_solved()
+        },
+        [true, false, true, false] => |s: &CubeState| {
+            s.cross_solved() && s.front_right_f2l_pair_solved() && s.back_right_f2l_pair_solved()
+        },
+        [true, false, false, true] => |s: &CubeState| {
+            s.cross_solved() && s.front_right_f2l_pair_solved() && s.back_left_f2l_pair_solved()
+        },
+        [false, true, true, false] => |s: &CubeState| {
+            s.cross_solved() && s.front_left_f2l_pair_solved() && s.back_right_f2l_pair_solved()
+        },
+        [false, true, false, true] => |s: &CubeState| {
+            s.cross_solved() && s.front_left_f2l_pair_solved() && s.back_left_f2l_pair_solved()
+        },
+        [false, false, true, true] => |s: &CubeState| {
+            s.cross_solved() && s.back_right_f2l_pair_solved() && s.back_left_f2l_pair_solved()
+        },
+        [true, true, true, false] => |s: &CubeState| {
+            s.cross_solved()
+                && s.front_right_f2l_pair_solved()
+                && s.front_left_f2l_pair_solved()
+                && s.back_right_f2l_pair_solved()
+        },
+        [true, true, false, true] => |s: &CubeState| {
+            s.cross_solved()
+                && s.front_right_f2l_pair_solved()
+                && s.front_left_f2l_pair_solved()
+                && s.back_left_f2l_pair_solved()
+        },
+        [true, false, true, true] => |s: &CubeState| {
+            s.cross_solved()
+                && s.front_right_f2l_pair_solved()
+                && s.back_right_f2l_pair_solved()
+                && s.back_left_f2l_pair_solved()
+        },
+        [false, true, true, true] => |s: &CubeState| {
+            s.cross_solved()
+                && s.front_left_f2l_pair_solved()
+                && s.back_right_f2l_pair_solved()
+                && s.back_left_f2l_pair_solved()
+        },
+        [true, true, true, true] => |s: &CubeState| s.f2l_solved(),
+        _ => panic!("Invalid pair combination: {:?}", mask),
+    }
+}
+
+pub fn enumerate_f2l_solutions(
     state: &crate::cube::state::CubeState,
+    max_depth_per_pair: usize,
 ) -> Option<Vec<crate::cube::moves::CubeMove>> {
     // Placeholder implementation
+    // Go through all possible orderings of the 4 f2l pairs
+    for ordering in (0..4).permutations(4) {
+        println!("{:?}", ordering);
+        let mut mask = [false, false, false, false];
+        for pair_id in ordering {
+            mask[pair_id] = true;
+            println!("    {:?}", mask);
+            let current_criteria = make_criterion(mask.clone());
+            let legal_moves = NON_ROTATION_MOVES;
+            let current_pair_solutions = enumerate_states_with_criteria(state.clone(), max_depth_per_pair, current_criteria, &legal_moves);
+            if current_pair_solutions.len() > 0 {
+                // Add these solutions to the list of possibilities
+
+            } else {
+                // None found, don't search this ordering any more
+            }
+        }
+    }
+
     Some(vec![])
 }
 

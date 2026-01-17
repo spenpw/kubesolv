@@ -91,6 +91,52 @@ pub fn invert_move(cube_move: CubeMove) -> CubeMove {
     }
 }
 
+pub fn move_standard_notation(mv: &CubeMove) -> String {
+    match mv {
+        CubeMove::U => "U",
+        CubeMove::UPrime => "U'",
+        CubeMove::D => "D",
+        CubeMove::DPrime => "D'",
+        CubeMove::L => "L",
+        CubeMove::LPrime => "L'",
+        CubeMove::R => "R",
+        CubeMove::RPrime => "R'",
+        CubeMove::F => "F",
+        CubeMove::FPrime => "F'",
+        CubeMove::B => "B",
+        CubeMove::BPrime => "B'",
+        CubeMove::M => "M",
+        CubeMove::MPrime => "M'",
+        CubeMove::E => "E",
+        CubeMove::EPrime => "E'",
+        CubeMove::S => "S",
+        CubeMove::SPrime => "S'",
+        CubeMove::X => "X",
+        CubeMove::XPrime => "X'",
+        CubeMove::Y => "Y",
+        CubeMove::YPrime => "Y'",
+        CubeMove::Z => "Z",
+        CubeMove::ZPrime => "Z'",
+        CubeMove::U2 => "U2",
+        CubeMove::D2 => "D2",
+        CubeMove::L2 => "L2",
+        CubeMove::R2 => "R2",
+        CubeMove::F2 => "F2",
+        CubeMove::B2 => "B2",
+        CubeMove::M2 => "M2",
+        CubeMove::E2 => "E2",
+        CubeMove::S2 => "S2",
+        CubeMove::X2 => "X2",
+        CubeMove::Y2 => "Y2",
+        CubeMove::Z2 => "Z2",
+    }.to_owned()
+}
+
+pub fn move_sequence_to_standard_notation(moves: Vec<CubeMove>) -> String {
+    let move_strings: Vec<String> = moves.iter().map(move_standard_notation).collect();
+    move_strings.join(" ")
+}
+
 impl CubeState {
     // Helper function to rotate a single face 90° clockwise
     fn rotate_face_cw(&mut self, face: usize) {
