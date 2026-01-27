@@ -1,0 +1,17 @@
+imagePrefix: ""
+
+web:
+  enabled: true
+  ingress:
+    hostname: kubesolv.io
+    annotations: {}
+    className: ""
+    tls:
+      enabled: false
+      certManager:
+        enabled: false
+        issuerType: "issuer" # issuer or cluster-issuer
+        issuerName: "" #
+
+solvers:
+  installDefaults: true
