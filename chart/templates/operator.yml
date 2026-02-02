@@ -1,1 +1,79 @@
-# TODO put deployment, service account, etc here
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    labels:
+        app: kubesolv-operator
+    name: kubesolv-operator
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: kubesolv-operator
+    template:
+        metadata:
+            labels:
+                app: kubesolv-operator
+        spec:
+            serviceAccountName: kubesolv-operator
+            containers:
+                -
+                    image: {{ .Values.imagePrefix }}kubesolv/operator:{{ .Chart.AppVersion }}
+                    imagePullPolicy: Always
+                    name: kubesolv-operator
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+    name: kubesolv-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+    name: kubesolv-operator
+rules:
+
+    # Framework: knowing which other operators are running (i.e. peering).
+    -
+        apiGroups: [kopf.dev]
+        resources: [clusterkopfpeerings]
+        verbs: [list, watch, patch, get]
+
+    # Framework: runtime observation of namespaces & CRDs (addition/deletion).
+    -
+        apiGroups: [apiextensions.k8s.io]
+        resources: [customresourcedefinitions]
+        verbs: [list, watch]
+    -
+        apiGroups: [""]
+        resources: [namespaces]
+        verbs: [list, watch]
+    -
+        apiGroups: [""]
+        resources: [events]
+        verbs: [list, watch, create, patch]
+
+    # Framework: admission webhook configuration management.
+    -
+        apiGroups: [admissionregistration.k8s.io/v1, admissionregistration.k8s.io/v1beta1]
+        resources: [validatingwebhookconfigurations, mutatingwebhookconfigurations]
+        verbs: [create, patch]
+
+    # Application: read-only access for watching cluster-wide.
+    -
+        apiGroups: [kubesolv.io]
+        resources: [solvers, cubestates, solvejobs]
+        verbs: [list, watch, get, update, delete, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+    name: kubesolv-operator
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: kubesolv-operator
+subjects:
+    -
+        kind: ServiceAccount
+        name: kubesolv-operator
+        namespace: {{ .Release.Namespace }}

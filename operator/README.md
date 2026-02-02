@@ -10,7 +10,7 @@ The Solver CRD is used to represent an "installed" Rubik's Cube solver algorithm
 
 ### CubeState
 
-The CubeState CRD is used to represent the state of a Rubik's Cube, usually to solve using installed Solvers.
+The CubeState CRD is used to represent the state of a Rubik's Cube, usually to solve using installed Solvers. It can be represented either by a scramble algorithm (sequence of moves) or the actual raw state (string of characters representing sticker colors).
 
 ### SolveJob
 

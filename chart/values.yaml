@@ -1,4 +1,4 @@
-imagePrefix: ""
+imagePrefix: ghcr.io/spenpw/
 
 web:
   enabled: true
