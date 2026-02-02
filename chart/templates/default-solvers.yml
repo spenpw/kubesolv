@@ -1,8 +1,0 @@
-{{ if .Values.solvers.installDefaults }}
-
-# TODO put solver 1 here
-
----
-# TODO put solver 2 here
-
-{{ end }}
