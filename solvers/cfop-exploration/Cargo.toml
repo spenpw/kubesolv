@@ -1,0 +1,12 @@
+[package]
+name = "cfop-exploration-solver"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+itertools = "0.14.0"
+kubesolv-solvers = {version = "0.1.0" , path = "../solvers-rs"}
+
+[[bin]]
+name = "cfop-exploration"
+path = "src/bin/cfop-exploration.rs"

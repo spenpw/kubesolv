@@ -8,15 +8,15 @@ pub struct CfopExplorationSolver {
 
 use itertools::{Itertools, Permutations, min};
 
-use super::util::{
+use kubesolv_solvers::solver::util::{
     cross::enumerate_cross_solutions,
     enumerate::enumerate_states_with_criteria,
     f2l::F2LPair,
 };
-use super::Solver;
-use crate::cube::{moves::CubeMove, moves::NON_ROTATION_MOVES, state::CubeState};
-use crate::solver::util::cross;
-use crate::solver::util::f2l::make_criterion;
+use kubesolv_solvers::solver::Solver;
+use kubesolv_solvers::cube::{moves::CubeMove, moves::NON_ROTATION_MOVES, state::CubeState};
+use kubesolv_solvers::solver::util::cross;
+use kubesolv_solvers::solver::util::f2l::make_criterion;
 
 impl CfopExplorationSolver {
     pub fn new() -> Self {
@@ -33,8 +33,8 @@ impl CfopExplorationSolver {
 impl Solver for CfopExplorationSolver {
     fn solve(
         &self,
-        state: &crate::cube::state::CubeState,
-    ) -> Option<Vec<crate::cube::moves::CubeMove>> {
+        state: &kubesolv_solvers::cube::state::CubeState,
+    ) -> Option<Vec<kubesolv_solvers::cube::moves::CubeMove>> {
 
         // Loop through possible orientations (which side is down)
             // Loop through possible cross solutions up to cross_max_depth
@@ -51,11 +51,11 @@ impl Solver for CfopExplorationSolver {
 
         let orientation_prefixes = vec![
             vec![], // yellow cross
-            vec![crate::cube::moves::CubeMove::X],  // blue cross
-            vec![crate::cube::moves::CubeMove::X, crate::cube::moves::CubeMove::X],  // white cross
-            vec![crate::cube::moves::CubeMove::XPrime],  // green cross
-            vec![crate::cube::moves::CubeMove::Y],  // red cross
-            vec![crate::cube::moves::CubeMove::YPrime],  // orange cross
+            vec![kubesolv_solvers::cube::moves::CubeMove::X],  // blue cross
+            vec![kubesolv_solvers::cube::moves::CubeMove::X, kubesolv_solvers::cube::moves::CubeMove::X],  // white cross
+            vec![kubesolv_solvers::cube::moves::CubeMove::XPrime],  // green cross
+            vec![kubesolv_solvers::cube::moves::CubeMove::Y],  // red cross
+            vec![kubesolv_solvers::cube::moves::CubeMove::YPrime],  // orange cross
         ];
 
         let mut shortest_length = usize::MAX;

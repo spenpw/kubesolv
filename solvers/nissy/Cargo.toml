@@ -1,0 +1,15 @@
+[package]
+name = "nissy-solver"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kubesolv-solvers = {version = "0.1.0" , path = "../solvers-rs"}
+
+[[bin]]
+name = "nissy-optimal"
+path = "src/bin/nissy-optimal.rs"
+
+[[bin]]
+name = "nissy-light"
+path = "src/bin/nissy-light.rs"

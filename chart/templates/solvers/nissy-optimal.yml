@@ -1,0 +1,12 @@
+{{ if .Values.solvers.installDefaults }}
+
+apiVersion: kubesolv.io/v1
+kind: Solver
+metadata:
+    name: nissy-optimal
+spec:
+    description: Nissy Optimal Solver. See https://nissy.tronto.net/.
+    image: {{ .Values.imagePrefix }}kubesolv/nissy-optimal:2.0.8
+    mode: standalone
+
+{{ end }}

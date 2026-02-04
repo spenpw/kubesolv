@@ -11,7 +11,15 @@ variable "IMAGE_TAG" {
 }
 
 group "default" {
-    targets = ["operator"]
+    targets = ["operator", "default-solvers"]
+}
+
+group "default-solvers" {
+    targets = [
+        "nissy-optimal",
+        "nissy-light",
+        "cfop-exploration"
+    ]
 }
 
 target "operator" {
@@ -20,4 +28,37 @@ target "operator" {
     tags = [
         "${IMAGE_PREFIX}operator:${IMAGE_TAG}"
     ]
+}
+
+target "nissy-optimal" {
+    context = "./solvers/nissy"
+    target = "nissy-optimal"
+    tags = [
+        "${IMAGE_PREFIX}nissy-optimal:${IMAGE_TAG}"
+    ]
+    contexts = {
+        solvers-rs = "./solvers/solvers-rs"
+    }
+}
+
+target "nissy-light" {
+    context = "./solvers/nissy"
+    target = "nissy-light"
+    tags = [
+        "${IMAGE_PREFIX}nissy-light:${IMAGE_TAG}"
+    ]
+    contexts = {
+        solvers-rs = "./solvers/solvers-rs"
+    }
+}
+
+target "cfop-exploration" {
+    context = "./solvers/cfop-exploration"
+    target = "cfop-exploration"
+    tags = [
+        "${IMAGE_PREFIX}cfop-exploration:${IMAGE_TAG}"
+    ]
+    contexts = {
+        solvers-rs = "./solvers/solvers-rs"
+    }
 }

@@ -1,0 +1,12 @@
+{{ if .Values.solvers.installDefaults }}
+
+apiVersion: kubesolv.io/v1
+kind: Solver
+metadata:
+    name: cfop-exploration
+spec:
+    description: Optimized exploration of CFOP solutions. Implemented by Kubesolv.
+    image: {{ .Values.imagePrefix }}kubesolv/cfop-exploration:0.1.0
+    mode: standalone
+
+{{ end }}
