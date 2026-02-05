@@ -1,4 +1,4 @@
-use crate::cube::{
+use kubesolv_solvers::cube::{
     moves::{CubeMove, CubeMove::*},
     state::CubeState,
 };
@@ -6,8 +6,8 @@ use crate::cube::{
 pub const AUF_MOVES: &[CubeMove] = &[U, UPrime, U2];
 
 pub fn get_auf_solution(
-    state: &crate::cube::state::CubeState,
-) -> Result<Vec<(CubeState, Vec<crate::cube::moves::CubeMove>)>, String> {
+    state: &kubesolv_solvers::cube::state::CubeState,
+) -> Result<Vec<(CubeState, Vec<kubesolv_solvers::cube::moves::CubeMove>)>, String> {
     if state.solved() {
         return Ok(vec![(state.clone(), vec![])]);
     }
@@ -23,6 +23,8 @@ pub fn get_auf_solution(
 
 #[cfg(test)]
 mod tests {
+    use crate::util::pll::pll_solved;
+
     use super::*;
 
     #[test]
@@ -30,7 +32,7 @@ mod tests {
         for &mv in AUF_MOVES {
             let mut state = CubeState::new_solved();
             state.execute_move(mv);
-            assert!(state.pll_solved(), "PLL should be solved after applying PLL algorithm");
+            assert!(pll_solved(&state), "PLL should be solved after applying PLL algorithm");
         }
     }
 }

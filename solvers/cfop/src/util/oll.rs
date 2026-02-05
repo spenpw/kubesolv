@@ -1,21 +1,21 @@
-use crate::cube::{
+use kubesolv_solvers::cube::{
     moves::{CubeMove, CubeMove::*},
     state::CubeState,
 };
 
-impl CubeState {
-    pub fn oll_solved(&self) -> bool {
-        if !self.f2l_solved() {
+use crate::util::f2l::f2l_solved;
+
+pub fn oll_solved(state: &CubeState) -> bool {
+    if !f2l_solved(state) {
+        return false;
+    }
+    let top_color = state.faces[0][4];
+    for &pos in &[0, 1, 2, 3, 5, 6, 7, 8] {
+        if state.faces[0][pos] != top_color {
             return false;
         }
-        let top_color = self.faces[0][4];
-        for &pos in &[0, 1, 2, 3, 5, 6, 7, 8] {
-            if self.faces[0][pos] != top_color {
-                return false;
-            }
-        }
-        true
     }
+    true
 }
 
 pub const OLL_ALGORITHMS: &[&[CubeMove]] = &[
@@ -160,9 +160,9 @@ pub const OLL_ALGORITHMS: &[&[CubeMove]] = &[
 ];
 
 pub fn get_oll_solution(
-    state: &crate::cube::state::CubeState,
-) -> Result<Vec<(CubeState, Vec<crate::cube::moves::CubeMove>)>, String> {
-    if state.oll_solved() {
+    state: &kubesolv_solvers::cube::state::CubeState,
+) -> Result<Vec<(CubeState, Vec<kubesolv_solvers::cube::moves::CubeMove>)>, String> {
+    if oll_solved(state) {
         return Ok(vec![(state.clone(), vec![])]);
     }
     for setup_seq in [&[] as &[CubeMove], &[U], &[UPrime], &[U2]] {
@@ -175,7 +175,7 @@ pub fn get_oll_solution(
             for &mv in algorithm {
                 test_state.execute_move(mv);
             }
-            if test_state.oll_solved() {
+            if oll_solved(&test_state) {
                 let mut full_sequence = setup_seq.to_vec();
                 full_sequence.extend_from_slice(algorithm);
                 return Ok(vec![(test_state, full_sequence)]);
@@ -197,7 +197,7 @@ mod tests {
                 state.execute_move(mv);
             }
             assert!(
-                state.f2l_solved(),
+                f2l_solved(&state),
                 "OLL algorithm {:?} did not maintain F2L solved",
                 algorithm
             );
@@ -223,7 +223,7 @@ mod tests {
                     Ok(solutions) => {
                         let (solved_state, solution_moves) = &solutions[0];
                         assert!(
-                            solved_state.oll_solved(),
+                            oll_solved(solved_state),
                             "OLL solution did not solve the cube"
                         );
                         let mut test_state = state.clone();
@@ -231,7 +231,7 @@ mod tests {
                             test_state.execute_move(mv);
                         }
                         assert!(
-                            test_state.oll_solved(),
+                            oll_solved(&test_state),
                             "Applying OLL solution moves did not result in OLL solved state"
                         );
                     }

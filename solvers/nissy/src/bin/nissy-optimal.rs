@@ -1,4 +1,4 @@
-use nissy_solver::optimal::NissyOptimalSolver;
+use nissy_solvers::optimal::NissyOptimalSolver;
 use kubesolv_solvers::solver::solver_main;
 
 fn main() {

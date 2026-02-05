@@ -8,15 +8,10 @@ pub struct CfopExplorationSolver {
 
 use itertools::{Itertools, Permutations, min};
 
-use kubesolv_solvers::solver::util::{
-    cross::enumerate_cross_solutions,
-    enumerate::enumerate_states_with_criteria,
-    f2l::F2LPair,
-};
 use kubesolv_solvers::solver::Solver;
 use kubesolv_solvers::cube::{moves::CubeMove, moves::NON_ROTATION_MOVES, state::CubeState};
-use kubesolv_solvers::solver::util::cross;
-use kubesolv_solvers::solver::util::f2l::make_criterion;
+
+use crate::util::cross::enumerate_cross_solutions;
 
 impl CfopExplorationSolver {
     pub fn new() -> Self {

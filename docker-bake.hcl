@@ -53,7 +53,7 @@ target "nissy-light" {
 }
 
 target "cfop-exploration" {
-    context = "./solvers/cfop-exploration"
+    context = "./solvers/cfop"
     target = "cfop-exploration"
     tags = [
         "${IMAGE_PREFIX}cfop-exploration:${IMAGE_TAG}"

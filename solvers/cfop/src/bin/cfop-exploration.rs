@@ -1,4 +1,4 @@
-use cfop_exploration_solver::cfop_exploration::CfopExplorationSolver;
+use cfop_solvers::cfop_exploration::CfopExplorationSolver;
 use kubesolv_solvers::solver::solver_main;
 
 fn main() {

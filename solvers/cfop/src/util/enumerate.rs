@@ -1,11 +1,11 @@
 pub fn enumerate_states_with_criteria(
-    state: crate::cube::state::CubeState,
+    state: kubesolv_solvers::cube::state::CubeState,
     max_depth: usize,
-    criterion: fn(&crate::cube::state::CubeState) -> bool,
-    legal_moves: &[crate::cube::moves::CubeMove],
+    criterion: fn(&kubesolv_solvers::cube::state::CubeState) -> bool,
+    legal_moves: &[kubesolv_solvers::cube::moves::CubeMove],
 ) -> Vec<(
-    crate::cube::state::CubeState,
-    Vec<crate::cube::moves::CubeMove>,
+    kubesolv_solvers::cube::state::CubeState,
+    Vec<kubesolv_solvers::cube::moves::CubeMove>,
 )> {
     // Warn if max_depth > 6
     if max_depth > 6 {
@@ -36,9 +36,9 @@ pub fn enumerate_states_with_criteria(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::cube::moves::NON_ROTATION_MOVES;
-    use crate::cube::scramble::generate_scramble_sequence;
-    use crate::cube::state::CubeState;
+    use kubesolv_solvers::cube::moves::NON_ROTATION_MOVES;
+    use kubesolv_solvers::cube::scramble::generate_scramble_sequence;
+    use kubesolv_solvers::cube::state::CubeState;
 
     fn test_enumerate_states_with_criteria_depth_scrambled(
         depth: usize,
